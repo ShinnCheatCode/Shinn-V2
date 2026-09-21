@@ -1,0 +1,50 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Flutter iOS App
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x' # Thay đổi phiên bản Flutter phù hợp với dự án của bạn
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build iOS Release (Unsigned)
+        run: |
+          flutter build ios --release --no-pub
+
+      - name: Package IPA (Ad-hoc / Debug building structure)
+        run: |
+          cd build/ios/iphoneos
+          mkdir Payload
+          mv Runner.app Payload/
+          zip -r ShinnCheat.ipa Payload
+          mkdir -p ../../../output
+          mv ShinnCheat.ipa ../../../output/
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ShinnCheat-IPA
+          path: output/ShinnCheat.ipa
