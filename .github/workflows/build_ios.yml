@@ -23,9 +23,18 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.x' # Thay đổi phiên bản Flutter phù hợp với dự án của bạn
+          flutter-version: '3.19.x'
           channel: 'stable'
           cache: true
+
+      # Bổ sung bước này để tự động tạo cấu trúc lib/main.dart nếu trên git chưa có
+      - name: Create main.dart if missing
+        run: |
+          mkdir -p lib
+          if [ ! -f "lib/main.dart" ]; then
+            echo "Creating dummy main.dart..."
+            echo "import 'package:flutter/material.dart'; void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('Shinn Cheat')))));" > lib/main.dart
+          fi
 
       - name: Install Dependencies
         run: flutter pub get
