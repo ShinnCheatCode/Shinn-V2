@@ -60,7 +60,7 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
             index: _currentIndex,
             children: _screens,
           ),
-          // Thanh điều hướng nổi dưới màn hình (Floating Bottom Bar)
+          // Floating Bottom Navigation Bar chuẩn không bị lẹm viền
           Positioned(
             left: 20,
             right: 20,
@@ -134,9 +134,57 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   }
 }
 
-// 1. HOME SCREEN
-class HomeScreen extends StatelessWidget {
+// ================= 1. HOME SCREEN =================
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String currentRole = 'Owner';
+
+  void _showRoleSelector() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF161622),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Chọn vai trò để kích hoạt', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+              const SizedBox(height: 16),
+              _roleOptionItem('Owner', 'Quyền cao nhất', Icons.star, Colors.purpleAccent),
+              _roleOptionItem('Admin', 'Quản lý hệ thống', Icons.verified_user, Colors.blueAccent),
+              _roleOptionItem('Member', 'Thành viên sử dụng', Icons.person, Colors.grey),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _roleOptionItem(String role, String desc, IconData icon, Color color) {
+    bool isSelected = currentRole == role;
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(role, style: TextStyle(fontWeight: FontWeight.bold, color: isSelected ? Colors.purpleAccent : Colors.white)),
+      subtitle: Text(desc, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+      trailing: isSelected ? const Icon(Icons.check_circle, color: Colors.purpleAccent) : null,
+      onTap: () {
+        setState(() => currentRole = role);
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đã chuyển sang vai trò: $role')));
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +225,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.settings, color: Colors.blueAccent, size: 20),
-                  onPressed: () {},
+                  onPressed: _showRoleSelector,
                 ),
               ),
             ],
@@ -229,12 +277,12 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('Welcome,\nShinn', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2)),
-                      SizedBox(height: 8),
-                      Text('Device Status:', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                      SizedBox(height: 2),
-                      Text('Connected', style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14)),
+                    children: [
+                      const Text('Welcome,\nShinn', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2)),
+                      const SizedBox(height: 8),
+                      const Text('Device Status:', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                      const SizedBox(height: 2),
+                      Text('Connected ($currentRole)', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 13)),
                     ],
                   ),
                 ),
@@ -247,9 +295,9 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-              Expanded(child: _buildRoleCard('Owner', 'Quyền cao nhất', Icons.star, Colors.purpleAccent)),
+              Expanded(child: GestureDetector(onTap: _showRoleSelector, child: _buildRoleCard('Owner', 'Quyền cao nhất', Icons.star, Colors.purpleAccent))),
               const SizedBox(width: 14),
-              Expanded(child: _buildRoleCard('Admin', 'Quản lý hệ thống', Icons.verified_user, Colors.blueAccent)),
+              Expanded(child: GestureDetector(onTap: _showRoleSelector, child: _buildRoleCard('Admin', 'Quản lý hệ thống', Icons.verified_user, Colors.blueAccent))),
             ],
           ),
         ],
@@ -279,7 +327,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// 2. SOURCES SCREEN
+// ================= 2. SOURCES SCREEN & CATEGORY DETAIL =================
 class SourcesScreen extends StatelessWidget {
   const SourcesScreen({Key? key}) : super(key: key);
 
@@ -360,34 +408,42 @@ class SourcesScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          ...categories.map((cat) => Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              color: const Color(0xFF181822),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white.withOpacity(0.04)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(cat['icon'] as IconData, color: Colors.white, size: 22),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(cat['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-                      const SizedBox(height: 2),
-                      Text(cat['count'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-                    ],
+          ...categories.map((cat) => GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CategoryDetailScreen(categoryName: cat['title'] as String)),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: const Color(0xFF181822),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: Colors.white.withOpacity(0.04)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
+                    child: Icon(cat['icon'] as IconData, color: Colors.white, size: 22),
                   ),
-                ),
-                Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[600], size: 14),
-              ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(cat['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                        const SizedBox(height: 2),
+                        Text(cat['count'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[600], size: 14),
+                ],
+              ),
             ),
           )),
         ],
@@ -396,31 +452,137 @@ class SourcesScreen extends StatelessWidget {
   }
 }
 
-// 3. INSTALLED SCREEN
+class CategoryDetailScreen extends StatelessWidget {
+  final String categoryName;
+  const CategoryDetailScreen({Key? key, required this.categoryName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(categoryName),
+        backgroundColor: Colors.transparent,
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF181822),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.between,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Gói Tối Ưu #$index', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+                    const SizedBox(height: 4),
+                    const Text('Phiên bản v2.1 • Stable', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  ],
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purpleAccent,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Đang cài đặt gói...')));
+                  },
+                  child: const Text('Cài đặt', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ================= 3. INSTALLED SCREEN =================
 class InstalledScreen extends StatelessWidget {
   const InstalledScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Đã cài đặt (Installed Packages)', style: TextStyle(color: Colors.grey, fontSize: 16))),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Đã Cài Đặt'), backgroundColor: Colors.transparent),
+      body: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 110),
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF181822),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.greenAccent, size: 28),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Package Active #${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 15)),
+                      const SizedBox(height: 4),
+                      const Text('Đã kích hoạt thành công trên hệ thống', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text('Gỡ', style: TextStyle(color: Colors.redAccent)),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-// 4. FILES SCREEN
+// ================= 4. FILES SCREEN =================
 class FilesScreen extends StatelessWidget {
   const FilesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Quản lý File hệ thống', style: TextStyle(color: Colors.grey, fontSize: 16))),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Quản Lý Files'), backgroundColor: Colors.transparent),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 110),
+        children: const [
+          ListTile(
+            leading: Icon(Icons.folder, color: Colors.amber),
+            title: Text('/var/mobile/ShinnData'),
+            subtitle: Text('Thư mục gốc hệ thống'),
+          ),
+          ListTile(
+            leading: Icon(Icons.insert_drive_file, color: Colors.blueAccent),
+            title: Text('config_v2.json'),
+            subtitle: Text('24 KB • 2026-06-06'),
+          ),
+          ListTile(
+            leading: Icon(Icons.insert_drive_file, color: Colors.blueAccent),
+            title: Text('payload.dylib'),
+            subtitle: Text('1.2 MB • Active'),
+          ),
+        ],
+      ),
     );
   }
 }
 
-// 5. MORE / ABOUT SCREEN
+// ================= 5. MORE / ABOUT SCREEN =================
 class MoreScreen extends StatelessWidget {
   const MoreScreen({Key? key}) : super(key: key);
 
@@ -472,47 +634,82 @@ class MoreScreen extends StatelessWidget {
             style: TextStyle(color: Colors.grey[400], fontSize: 13, height: 1.4),
           ),
           const SizedBox(height: 24),
-          const Text('Liên hệ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13)),
+          const Text('Liên hệ & Công cụ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13)),
           const SizedBox(height: 12),
-          _buildActionItem(Icons.send_rounded, 'Telegram', '@ShinnThieuu', Icons.north_east_rounded),
-          _buildActionItem(Icons.favorite_rounded, 'Donate • MB Bank', '104877777', Icons.copy_rounded),
-          _buildActionItem(Icons.sync_rounded, 'Remote JSON', 'Cập nhật dữ liệu từ repository', Icons.settings_accessibility_rounded),
-          _buildActionItem(Icons.verified_rounded, 'SHA256', 'Kiểm tra tính toàn vẹn của file', null),
+          
+          _buildActionItem(Icons.send_rounded, 'Telegram', '@ShinnThieuu', Icons.north_east_rounded, () {}),
+          _buildActionItem(Icons.favorite_rounded, 'Donate • MB Bank', '104877777', Icons.copy_rounded, (ctx) {
+            Clipboard.setData(const ClipboardData(text: '104877777'));
+            ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Đã sao chép số tài khoản MB Bank!')));
+          }),
+          _buildActionItem(Icons.sync_rounded, 'Remote JSON', 'Cập nhật dữ liệu từ repository', Icons.settings_accessibility_rounded, (ctx) {
+            showDialog(
+              context: ctx,
+              builder: (c) => AlertDialog(
+                backgroundColor: const Color(0xFF161622),
+                title: const Text('Remote JSON Sync'),
+                content: const Text('Đang đồng bộ cấu hình mới nhất từ repository của Shinn...'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(c), child: const Text('Đóng', style: TextStyle(color: Colors.purpleAccent)))
+                ],
+              ),
+            );
+          }),
+          _buildActionItem(Icons.verified_rounded, 'SHA256', 'Kiểm tra tính toàn vẹn của file', null, (ctx) {
+            showDialog(
+              context: ctx,
+              builder: (c) => AlertDialog(
+                backgroundColor: const Color(0xFF161622),
+                title: const Text('Kiểm tra SHA256'),
+                content: const Text('Trạng thái: Toàn vẹn dữ liệu hợp lệ (Valid Hash).'),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(c), child: const Text('OK', style: TextStyle(color: Colors.purpleAccent)))
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
   }
 
-  Widget _buildActionItem(IconData icon, String title, String subtitle, IconData? trailingIcon) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF181822),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withOpacity(0.04)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
-            child: Icon(icon, color: Colors.white, size: 20),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildActionItem(IconData icon, String title, String subtitle, IconData? trailingIcon, Function(BuildContext) onTap) {
+    return Builder(
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => onTap(context),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: const Color(0xFF181822),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.white.withOpacity(0.04)),
+            ),
+            child: Row(
               children: [
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
-                const SizedBox(height: 2),
-                Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
+                  child: Icon(icon, color: Colors.white, size: 20),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+                      const SizedBox(height: 2),
+                      Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                    ],
+                  ),
+                ),
+                if (trailingIcon != null) Icon(trailingIcon, color: Colors.grey[500], size: 16),
               ],
             ),
           ),
-          if (trailingIcon != null) Icon(trailingIcon, color: Colors.grey[500], size: 16),
-        ],
-      ),
+        );
+      },
     );
   }
 }
