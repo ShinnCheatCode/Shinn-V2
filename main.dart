@@ -56,13 +56,11 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Nội dung màn hình thay đổi theo Tab
           IndexedStack(
             index: _currentIndex,
             children: _screens,
           ),
-          
-          // Thanh điều hướng dưới dạng Floating (trôi nổi), không bị dính sát lẹm đáy màn hình điện thoại
+          // Thanh điều hướng nổi dưới màn hình (Floating Bottom Bar)
           Positioned(
             left: 20,
             right: 20,
@@ -136,7 +134,7 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   }
 }
 
-// ================= 1. MÀN HÌNH TRANG CHỦ (HOME SCREEN) =================
+// 1. HOME SCREEN
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -147,7 +145,6 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.between,
             children: [
@@ -165,15 +162,9 @@ class HomeScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text(
-                        'Shinn Cheat',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
+                      Text('Shinn Cheat', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                       SizedBox(height: 2),
-                      Text(
-                        'v2.0',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
+                      Text('v2.0', style: TextStyle(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
                 ],
@@ -192,8 +183,6 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          
-          // Welcome Card với Gradient đẹp & chuẩn tỉ lệ
           Container(
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
@@ -213,7 +202,6 @@ class HomeScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // Vòng tròn trạng thái thiết bị giống ảnh mẫu
                 Container(
                   width: 65,
                   height: 65,
@@ -231,10 +219,7 @@ class HomeScreen extends StatelessWidget {
                         child: Container(
                           width: 12,
                           height: 12,
-                          decoration: const BoxDecoration(
-                            color: Colors.greenAccent,
-                            shape: BoxShape.circle,
-                          ),
+                          decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
                         ),
                       ),
                     ],
@@ -245,45 +230,26 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text(
-                        'Welcome,\nShinn',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2),
-                      ),
+                      Text('Welcome,\nShinn', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, height: 1.2)),
                       SizedBox(height: 8),
                       Text('Device Status:', style: TextStyle(color: Colors.white70, fontSize: 12)),
                       SizedBox(height: 2),
-                      Text(
-                        'Connected',
-                        style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
+                      Text('Connected', style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, fontSize: 14)),
                     ],
                   ),
                 ),
-                const Text(
-                  'Better Tools\nFor Your\nGame',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(color: Colors.white70, fontSize: 11, height: 1.4),
-                ),
+                const Text('Better Tools\nFor Your\nGame', textAlign: TextAlign.right, style: TextStyle(color: Colors.white70, fontSize: 11, height: 1.4)),
               ],
             ),
           ),
           const SizedBox(height: 28),
-          
-          // Chọn vai trò đăng nhập
-          const Text(
-            'Chọn vai trò đăng nhập',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
+          const Text('Chọn vai trò đăng nhập', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 14),
           Row(
             children: [
-              Expanded(
-                child: _buildRoleCard('Owner', 'Quyền cao nhất', Icons.star, Colors.purpleAccent),
-              ),
+              Expanded(child: _buildRoleCard('Owner', 'Quyền cao nhất', Icons.star, Colors.purpleAccent)),
               const SizedBox(width: 14),
-              Expanded(
-                child: _buildRoleCard('Admin', 'Quản lý hệ thống', Icons.verified_user, Colors.blueAccent),
-              ),
+              Expanded(child: _buildRoleCard('Admin', 'Quản lý hệ thống', Icons.verified_user, Colors.blueAccent)),
             ],
           ),
         ],
@@ -313,7 +279,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// ================= 2. MÀN HÌNH SOURCES / DANH MỤC GÓI =================
+// 2. SOURCES SCREEN
 class SourcesScreen extends StatelessWidget {
   const SourcesScreen({Key? key}) : super(key: key);
 
@@ -335,16 +301,12 @@ class SourcesScreen extends StatelessWidget {
         title: const Text('SHINN CHEAT', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1)),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.send_rounded, color: Colors.white70),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.send_rounded, color: Colors.white70), onPressed: () {}),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 110),
         children: [
-          // Banner App trên đầu danh sách
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -364,10 +326,7 @@ class SourcesScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 const Center(
-                  child: Text(
-                    'SHINN CHEAT',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 1.5, color: Colors.white),
-                  ),
+                  child: Text('SHINN CHEAT', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 1.5, color: Colors.white)),
                 ),
                 const SizedBox(height: 12),
                 ClipRRect(
@@ -376,26 +335,20 @@ class SourcesScreen extends StatelessWidget {
                     height: 130,
                     width: double.infinity,
                     color: Colors.black26,
-                    child: const Center(
-                      child: Icon(Icons.image, size: 50, color: Colors.white24),
-                    ),
+                    child: const Center(child: Icon(Icons.image, size: 50, color: Colors.white24)),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.between,
             children: [
               const Text('DANH MỤC GÓI', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13, letterSpacing: 0.8)),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF181822),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                decoration: BoxDecoration(color: const Color(0xFF181822), borderRadius: BorderRadius.circular(12)),
                 child: Row(
                   children: const [
                     Icon(Icons.person, size: 14, color: Colors.grey),
@@ -407,8 +360,6 @@ class SourcesScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          
-          // Danh sách các Category Item
           ...categories.map((cat) => Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -421,10 +372,7 @@ class SourcesScreen extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.04),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
                   child: Icon(cat['icon'] as IconData, color: Colors.white, size: 22),
                 ),
                 const SizedBox(width: 16),
@@ -448,35 +396,31 @@ class SourcesScreen extends StatelessWidget {
   }
 }
 
-// ================= 3. MÀN HÌNH INSTALLED =================
+// 3. INSTALLED SCREEN
 class InstalledScreen extends StatelessWidget {
   const InstalledScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Text('Đã cài đặt (Installed Packages)', style: TextStyle(color: Colors.grey, fontSize: 16)),
-      ),
+      body: Center(child: Text('Đã cài đặt (Installed Packages)', style: TextStyle(color: Colors.grey, fontSize: 16))),
     );
   }
 }
 
-// ================= 4. MÀN HÌNH FILES =================
+// 4. FILES SCREEN
 class FilesScreen extends StatelessWidget {
   const FilesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Text('Quản lý File hệ thống', style: TextStyle(color: Colors.grey, fontSize: 16)),
-      ),
+      body: Center(child: Text('Quản lý File hệ thống', style: TextStyle(color: Colors.grey, fontSize: 16))),
     );
   }
 }
 
-// ================= 5. MÀN HÌNH MORE / THÔNG TIN (GIỚI THIỆU) =================
+// 5. MORE / ABOUT SCREEN
 class MoreScreen extends StatelessWidget {
   const MoreScreen({Key? key}) : super(key: key);
 
@@ -509,36 +453,27 @@ class MoreScreen extends StatelessWidget {
                   child: const Icon(Icons.star, color: Colors.white, size: 36),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'SHINN CHEAT',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 1.2),
-                ),
+                const Text('SHINN CHEAT', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 1.2)),
                 const SizedBox(height: 4),
                 Text('Play Smart • Stay Ahead', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E1E2C),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  decoration: BoxDecoration(color: const Color(0xFF1E1E2C), borderRadius: BorderRadius.circular(20)),
                   child: const Text('App được make bởi Shinn', style: TextStyle(color: Colors.purpleAccent, fontSize: 12, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 24),
-          
           Text(
             'Shinn Cheat là ứng dụng quản lý và phân phối các package được cấu hình thông qua repository của Shinn.',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey[400], fontSize: 13, height: 1.4),
           ),
           const SizedBox(height: 24),
-          
           const Text('Liên hệ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13)),
           const SizedBox(height: 12),
-          
           _buildActionItem(Icons.send_rounded, 'Telegram', '@ShinnThieuu', Icons.north_east_rounded),
           _buildActionItem(Icons.favorite_rounded, 'Donate • MB Bank', '104877777', Icons.copy_rounded),
           _buildActionItem(Icons.sync_rounded, 'Remote JSON', 'Cập nhật dữ liệu từ repository', Icons.settings_accessibility_rounded),
@@ -561,10 +496,7 @@ class MoreScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.04),
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
             child: Icon(icon, color: Colors.white, size: 20),
           ),
           const SizedBox(width: 16),
@@ -578,8 +510,7 @@ class MoreScreen extends StatelessWidget {
               ],
             ),
           ),
-          if (trailingIcon != null)
-            Icon(trailingIcon, color: Colors.grey[500], size: 16),
+          if (trailingIcon != null) Icon(trailingIcon, color: Colors.grey[500], size: 16),
         ],
       ),
     );
