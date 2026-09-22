@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
@@ -391,7 +391,7 @@ class SourcesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('DANH MỤC GÓI', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13, letterSpacing: 0.8)),
               Container(
@@ -409,43 +409,43 @@ class SourcesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ...categories.map((cat) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CategoryDetailScreen(categoryName: cat['title'] as String)),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                color: const Color(0xFF181822),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: Colors.white.withOpacity(0.04)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
-                    child: Icon(cat['icon'] as IconData, color: Colors.white, size: 22),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CategoryDetailScreen(categoryName: cat['title'] as String)),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF181822),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: Colors.white.withOpacity(0.04)),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(cat['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
-                        const SizedBox(height: 2),
-                        Text(cat['count'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-                      ],
-                    ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(color: Colors.white.withOpacity(0.04), borderRadius: BorderRadius.circular(12)),
+                        child: Icon(cat['icon'] as IconData, color: Colors.white, size: 22),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(cat['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white)),
+                            const SizedBox(height: 2),
+                            Text(cat['count'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                          ],
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[600], size: 14),
+                    ],
                   ),
-                  Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[600], size: 14),
-                ],
-              ),
-            ),
-          )),
+                ),
+              )),
         ],
       ),
     );
@@ -475,7 +475,7 @@ class CategoryDetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.between,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -636,8 +636,7 @@ class MoreScreen extends StatelessWidget {
           const SizedBox(height: 24),
           const Text('Liên hệ & Công cụ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70, fontSize: 13)),
           const SizedBox(height: 12),
-          
-          _buildActionItem(Icons.send_rounded, 'Telegram', '@ShinnThieuu', Icons.north_east_rounded, () {}),
+          _buildActionItem(Icons.send_rounded, 'Telegram', '@ShinnThieuu', Icons.north_east_rounded, (ctx) {}),
           _buildActionItem(Icons.favorite_rounded, 'Donate • MB Bank', '104877777', Icons.copy_rounded, (ctx) {
             Clipboard.setData(const ClipboardData(text: '104877777'));
             ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Đã sao chép số tài khoản MB Bank!')));
